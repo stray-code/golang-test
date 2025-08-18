@@ -8,16 +8,12 @@ import (
 )
 
 type EvolutionChain struct {
-	Chain Chain `json:chain`
-}
-
-type Chain struct {
-	Species Species `json:species`
-}
-
-type Species struct {
-	Name string `json:name`
-	Url  string `json:url`
+	Chain struct {
+		Species struct {
+			Name string `json:"name"`
+			Url  string `json:"url"`
+		} `json:"species"`
+	} `json:"chain"`
 }
 
 func main() {
@@ -42,5 +38,5 @@ func main() {
 		fmt.Println("Error:", err)
 	}
 
-	fmt.Println(data.Chain.Species.name)
+	fmt.Println(data.Chain.Species.Name)
 }
