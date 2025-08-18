@@ -20,8 +20,8 @@ func main() {
 	resp, err := http.Get("https://pokeapi.co/api/v2/evolution-chain/10")
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
 	}
+	defer resp.Body.Close()
 
 	fmt.Println(resp.StatusCode)
 
