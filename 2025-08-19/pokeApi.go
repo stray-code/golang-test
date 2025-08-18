@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 )
 
@@ -23,7 +24,9 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println(resp.StatusCode)
+	if resp.StatusCode != http.StatusOK {
+		log.Fatalf("APIからエラーレスポンスが返る：%s", resp.Status)
+	}
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
