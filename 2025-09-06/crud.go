@@ -7,6 +7,12 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+type User struct {
+	ID    int
+	NAME  string
+	EMAIL string
+}
+
 func main() {
 	db, err := sql.Open("sqlite3", "./test.db")
 	if err != nil {
@@ -51,16 +57,18 @@ func main() {
 	}
 	defer rows.Close()
 
+	var users []User
 	for rows.Next() {
-		var id int
-		var name string
-		var email string
-		err = rows.Scan(&id, &name, &email)
-		log.Println(id, name, email)
+		var u User
+		err = rows.Scan(&u.ID, &u.NAME, &u.EMAIL)
+		if err != nil {
+			log.Fatal(err)
+		}
+		users = append(users, u)
 	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
+
+	for _, u := range users {
+		log.Printf("ID: %d, NAME: %s, EMAIL: %s\n", u.ID, u.NAME, u.EMAIL)
 	}
 
 	// read row
