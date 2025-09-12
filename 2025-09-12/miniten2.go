@@ -2,7 +2,8 @@ package main
 
 import "github.com/eihigh/miniten"
 
-var y int
+var vy float64
+var y float64
 
 func main() {
 	miniten.Run(draw)
@@ -10,10 +11,15 @@ func main() {
 
 func draw() {
 	if miniten.IsClicked() {
-		y -= 6
-	} else {
-		y += 6
+		vy = -6
 	}
 
-	miniten.DrawImage("gopher.png", 100, y)
+	vy += 0.5
+	y += vy
+
+	if y > 360 {
+		y = 360
+	}
+
+	miniten.DrawImage("gopher.png", 0, int(y))
 }
