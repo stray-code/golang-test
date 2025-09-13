@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"math"
 	"math/rand/v2"
 
@@ -21,6 +22,9 @@ var isJustClicked = false
 
 var highScore = 0
 
+//go:embed *.png
+var fsys embed.FS
+
 func main() {
 	miniten.Run(draw)
 }
@@ -29,7 +33,7 @@ func draw() {
 	isJustClicked = !isPrevClicked && miniten.IsClicked()
 	isPrevClicked = miniten.IsClicked()
 
-	miniten.DrawImage("sky.png", 0, 0)
+	miniten.DrawImageFS(fsys, "sky.png", 0, 0)
 
 	switch scene {
 	case "title":
@@ -42,7 +46,7 @@ func draw() {
 }
 
 func drawTitle() {
-	miniten.DrawImage("gopher.png", 100, int(y))
+	miniten.DrawImageFS(fsys, "gopher.png", 100, int(y))
 	miniten.Println("はねるgopherくんゲーム")
 	miniten.Println("クリックでスタート")
 
@@ -62,7 +66,7 @@ func drawGame() {
 	y = math.Max(y, 0)
 	y = math.Min(y, 300)
 
-	miniten.DrawImage("gopher.png", 100, int(y))
+	miniten.DrawImageFS(fsys, "gopher.png", 100, int(y))
 
 	frames++
 
@@ -81,7 +85,7 @@ func drawGame() {
 	}
 
 	for i, wallX := range wallXs {
-		miniten.DrawImage("wall.png", wallX, wallYs[i])
+		miniten.DrawImageFS(fsys, "wall.png", wallX, wallYs[i])
 	}
 
 	cx := 100 + 30/2
@@ -106,10 +110,10 @@ func drawGame() {
 }
 
 func drawGameOver() {
-	miniten.DrawImage("gopher.png", 100, int(y))
+	miniten.DrawImageFS(fsys, "gopher.png", 100, int(y))
 
 	for i := range wallXs {
-		miniten.DrawImage("wall.png", wallXs[i], wallYs[i])
+		miniten.DrawImageFS(fsys, "wall.png", wallXs[i], wallYs[i])
 	}
 
 	miniten.Println("Game Over")
