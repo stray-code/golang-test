@@ -23,6 +23,25 @@ var (
 	barrels = []*barrel{}
 )
 
+func newBarrel() *barrel {
+	return &barrel{x: 640, y: ground - 50}
+}
+
+func (b *barrel) move() {
+	b.x -= 2
+}
+
+func (b *barrel) hit() bool {
+	cx := p.x + 30/2
+	cy := p.y + 38/2
+
+	return b.x < cx && cx < b.x+50 && b.y < cy && cy < b.y+50
+}
+
+func (b *barrel) draw() {
+	miniten.DrawImage("barrel.png", int(b.x), int(b.y))
+}
+
 func main() {
 	p.y = ground - 38
 
@@ -59,14 +78,20 @@ func draw() {
 	miniten.DrawImage("gopher.png", int(p.x), int(p.y))
 
 	if frames%60 == 0 {
-		barrels = append(barrels, &barrel{x: 640, y: ground - 50})
+		barrels = append(barrels, newBarrel())
 	}
 
 	for _, barrel := range barrels {
-		barrel.x -= 2
+		barrel.move()
+	}
+
+	for _, barrel := range barrels {
+		if barrel.hit() {
+			miniten.Println("hitting!!")
+		}
 	}
 
 	for _, b := range barrels {
-		miniten.DrawImage("barrel.png", int(b.x), int(b.y))
+		b.draw()
 	}
 }
