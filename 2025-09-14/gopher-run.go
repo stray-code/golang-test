@@ -20,7 +20,7 @@ var (
 	frames  = 0
 	ground  = 300.0
 	p       player
-	barrels = []barrel{}
+	barrels = []*barrel{}
 )
 
 func main() {
@@ -59,11 +59,11 @@ func draw() {
 	miniten.DrawImage("gopher.png", int(p.x), int(p.y))
 
 	if frames%60 == 0 {
-		barrels = append(barrels, barrel{x: 640, y: ground - 50})
+		barrels = append(barrels, &barrel{x: 640, y: ground - 50})
 	}
 
-	for i := range barrels {
-		barrels[i].x -= 2
+	for _, barrel := range barrels {
+		barrel.x -= 2
 	}
 
 	for _, b := range barrels {
