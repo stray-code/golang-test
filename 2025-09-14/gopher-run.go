@@ -1,6 +1,8 @@
 package main
 
 import (
+	"math/rand/v2"
+
 	"github.com/eihigh/miniten"
 )
 
@@ -16,11 +18,17 @@ type barrel struct {
 	y float64
 }
 
+type enemy interface {
+	move()
+	hit() bool
+	draw()
+}
+
 var (
 	frames  = 0
 	ground  = 300.0
 	p       player
-	barrels = []*barrel{}
+	enemies = []enemy{}
 )
 
 func newBarrel() *barrel {
@@ -40,6 +48,30 @@ func (b *barrel) hit() bool {
 
 func (b *barrel) draw() {
 	miniten.DrawImage("barrel.png", int(b.x), int(b.y))
+}
+
+type ghost struct {
+	x float64
+	y float64
+}
+
+func newGhost() *ghost {
+	return &ghost{x: 640, y: ground - 50}
+}
+
+func (g *ghost) move() {
+	g.x -= 4
+}
+
+func (g *ghost) hit() bool {
+	cx := p.x + 30/2
+	cy := p.y + 38/2
+
+	return g.x < cx && cx < g.x+50 && g.y < cy && cy < g.y+50
+}
+
+func (g *ghost) draw() {
+	miniten.DrawImage("ghost.png", int(g.x), int(g.y))
 }
 
 func main() {
@@ -78,20 +110,25 @@ func draw() {
 	miniten.DrawImage("gopher.png", int(p.x), int(p.y))
 
 	if frames%60 == 0 {
-		barrels = append(barrels, newBarrel())
+		switch rand.N(2) {
+		case 0:
+			enemies = append(enemies, newBarrel())
+		case 1:
+			enemies = append(enemies, newGhost())
+		}
 	}
 
-	for _, barrel := range barrels {
-		barrel.move()
+	for _, enemy := range enemies {
+		enemy.move()
 	}
 
-	for _, barrel := range barrels {
-		if barrel.hit() {
+	for _, enemy := range enemies {
+		if enemy.hit() {
 			miniten.Println("hitting!!")
 		}
 	}
 
-	for _, b := range barrels {
-		b.draw()
+	for _, enemy := range enemies {
+		enemy.draw()
 	}
 }
