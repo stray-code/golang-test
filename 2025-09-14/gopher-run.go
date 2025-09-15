@@ -74,6 +74,40 @@ func (g *ghost) draw() {
 	miniten.DrawImage("ghost.png", int(g.x), int(g.y))
 }
 
+type eagle struct {
+	x      float64
+	y      float64
+	frames int
+}
+
+func newEagle() *eagle {
+	return &eagle{x: 640, y: ground - 150}
+}
+
+func (e *eagle) move() {
+	e.x -= 5
+	e.frames++
+
+	if e.frames < 60 {
+		e.y += 1.5
+	} else if e.frames < 120 {
+		e.y -= 1.5
+	} else {
+		e.frames = 0
+	}
+}
+
+func (e *eagle) hit() bool {
+	cx := p.x + 30/2
+	cy := p.y + 38/2
+
+	return e.x < cx && cx < e.x+50 && e.y < cy && cy < e.y+50
+}
+
+func (e *eagle) draw() {
+	miniten.DrawImage("eagle.png", int(e.x), int(e.y))
+}
+
 func main() {
 	p.y = ground - 38
 
@@ -110,11 +144,13 @@ func draw() {
 	miniten.DrawImage("gopher.png", int(p.x), int(p.y))
 
 	if frames%60 == 0 {
-		switch rand.N(2) {
+		switch rand.N(3) {
 		case 0:
 			enemies = append(enemies, newBarrel())
 		case 1:
 			enemies = append(enemies, newGhost())
+		case 2:
+			enemies = append(enemies, newEagle())
 		}
 	}
 
